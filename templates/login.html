@@ -1,0 +1,17 @@
+
+{% extends "base.html" %}
+{% block title %}Iniciar sesión{% endblock %}
+{% block content %}
+<h1 class="text-2xl font-semibold mb-4">Iniciar sesión</h1>
+<form method="post" action="{{ url_for('login_post') }}" class="space-y-3 max-w-md">
+  <div>
+    <label class="block text-sm mb-1">Correo Electrónico</label>
+    <input name="email" type="email" required class="border rounded px-3 py-2 w-full" placeholder="admin@labodegona.com">
+  </div>
+  <div>
+    <label class="block text-sm mb-1">Contraseña</label>
+    <input name="password" type="password" required class="border rounded px-3 py-2 w-full">
+  </div>
+  <button class="px-4 py-2 bg-blue-600 text-white rounded">Entrar</button>
+</form>
+{% endblock %}

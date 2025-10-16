@@ -1,0 +1,46 @@
+
+{% extends "base.html" %}
+{% block title %}Admin · Subir imagen{% endblock %}
+{% block content %}
+<h1 class="text-2xl font-semibold mb-4">Subir/Reemplazar imagen de producto</h1>
+
+<form method="get" action="{{ url_for('admin_upload_image') }}" class="mb-4">
+  <label class="block text-sm mb-1">Producto</label>
+  <select name="product_id" class="border rounded px-3 py-2 w-full max-w-lg" onchange="location='?product_id='+this.value">
+    {% for p in products %}
+      <option value="{{ p.id }}" {% if request.args.get('product_id', products[0].id if products else '')|string == p.id|string %}selected{% endif %}>
+        {{ p.name }} ({{ p.slug }})
+      </option>
+    {% endfor %}
+  </select>
+</form>
+
+{% set current = (products|selectattr('id','equalto', request.args.get('product_id', products[0].id if products else '')|int)|list|first) if products else None %}
+
+<div class="flex items-center gap-4 mb-4">
+  <div class="w-56 h-36 bg-white rounded border grid place-items-center overflow-hidden">
+    {% if current and current.image_url %}
+      <img src="{{ current.image_url }}" alt="actual" class="object-cover w-full h-full">
+    {% else %}
+      <span class="text-gray-400 text-sm">Sin imagen</span>
+    {% endif %}
+  </div>
+  {% if current %}
+  <form method="post" action="{{ url_for('admin_delete_image') }}">
+    <input type="hidden" name="product_id" value="{{ current.id }}">
+    <button class="px-3 py-2 bg-red-600 text-white rounded">Eliminar imagen</button>
+  </form>
+  {% endif %}
+</div>
+
+{% if current %}
+<form method="post" action="{{ url_for('admin_upload_image_post') }}" enctype="multipart/form-data" class="space-y-3">
+  <input type="hidden" name="product_id" value="{{ current.id }}">
+  <div>
+    <label class="block text-sm mb-1">Archivo (JPG/PNG/WEBP)</label>
+    <input type="file" name="file" accept="image/*" required>
+  </div>
+  <button class="px-4 py-2 bg-blue-600 text-white rounded">Subir/Reemplazar</button>
+</form>
+{% endif %}
+{% endblock %}
